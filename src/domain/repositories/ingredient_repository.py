@@ -22,3 +22,7 @@ class IngredientRepository:
     async def get_all(self, skip: int = 0, limit: int = 100) -> List[Ingredient]:
         result = await self.db.execute(select(Ingredient).offset(skip).limit(limit))
         return result.scalars().all()
+
+    async def get_by_name(self, name: str) -> Optional[Ingredient]:
+        result = await self.db.execute(select(Ingredient).where(Ingredient.name == name))
+        return result.scalars().first()

@@ -38,6 +38,16 @@ async def ingest_csv(
     for row in csv_reader:
         # Expected CSV columns: name, brand, price, age_group, food_type, description, full_ingredient_list
         try:
+            # Parse ingredients if available
+            ingredient_ids = []
+            raw_ingredients = row.get('full_ingredient_list')
+            if raw_ingredients:
+                # Split by comma and strip whitespace
+                ingredient_names = [name.strip() for name in raw_ingredients.split(',') if name.strip()]
+                if ingredient_names:
+                    ingredients = await ingredient_service.get_or_create_ingredients(ingredient_names)
+                    ingredient_ids = [ing.id for ing in ingredients]
+
             # Create Product
             product_data = ProductCreate(
                 name=row.get('name'),
@@ -46,12 +56,9 @@ async def ingest_csv(
                 age_group=row.get('age_group'),
                 food_type=row.get('food_type'),
                 description=row.get('description'),
-                full_ingredient_list=row.get('full_ingredient_list')
+                full_ingredient_list=raw_ingredients,
+                ingredient_ids=ingredient_ids
             )
-            
-            # Note: Parsing ingredients from full_ingredient_list and creating Ingredient objects 
-            # is complex and depends on the format. For now, we just store the product.
-            # A more advanced implementation would parse the string and link/create ingredients.
             
             await product_service.create_product(product_data)
             products_created += 1
