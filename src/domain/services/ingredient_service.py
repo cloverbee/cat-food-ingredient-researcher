@@ -1,6 +1,8 @@
+from typing import List, Optional
+
 from src.domain.repositories.ingredient_repository import IngredientRepository
 from src.domain.schemas.ingredient import IngredientCreate, IngredientRead
-from typing import List, Optional
+
 
 class IngredientService:
     def __init__(self, repository: IngredientRepository):
@@ -21,13 +23,13 @@ class IngredientService:
             name = name.strip()
             if not name:
                 continue
-            
+
             # Check if exists
             ingredient = await self.repository.get_by_name(name)
             if not ingredient:
                 # Create if not exists
                 ingredient_create = IngredientCreate(name=name)
                 ingredient = await self.repository.create(ingredient_create)
-            
+
             ingredients.append(ingredient)
         return ingredients

@@ -1,5 +1,7 @@
+from typing import Any, Dict, List, Optional
+
 from pydantic import BaseModel
-from typing import Optional, List, Dict, Any
+
 
 class IngredientBase(BaseModel):
     name: str
@@ -7,11 +9,14 @@ class IngredientBase(BaseModel):
     nutritional_value: Optional[Dict[str, Any]] = None
     common_allergens: Optional[List[str]] = None
 
+
 class IngredientCreate(IngredientBase):
     pass
 
+
 class IngredientUpdate(IngredientBase):
     name: Optional[str] = None
+
 
 class IngredientRead(IngredientBase):
     id: int

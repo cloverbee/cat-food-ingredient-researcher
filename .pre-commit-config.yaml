@@ -1,0 +1,90 @@
+# Pre-commit hooks configuration
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+
+# To install: pre-commit install
+# To run manually: pre-commit run --all-files
+# To update hooks: pre-commit autoupdate
+
+repos:
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^(migrations/|alembic/)
+      - id: end-of-file-fixer
+        exclude: ^(migrations/|alembic/|frontend/)
+      - id: check-yaml
+        exclude: ^frontend/
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      - id: check-json
+        exclude: ^frontend/
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: debug-statements
+      - id: mixed-line-ending
+        args: ['--fix=lf']
+
+  # Python import sorting
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        name: isort (python)
+        args: ["--profile", "black", "--line-length", "120"]
+        exclude: ^(migrations/|alembic/|frontend/)
+
+  # Python code formatting with Black
+  - repo: https://github.com/psf/black
+    rev: 24.10.0
+    hooks:
+      - id: black
+        name: black
+        language_version: python3
+        args: ["--line-length", "120"]
+        exclude: ^(migrations/|alembic/|frontend/)
+
+  # Python linting with Flake8
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.1.1
+    hooks:
+      - id: flake8
+        name: flake8
+        args: ["--config", ".flake8"]
+        additional_dependencies:
+          - flake8-bugbear
+          - flake8-comprehensions
+          - flake8-simplify
+        exclude: ^(migrations/|alembic/|frontend/)
+
+  # Check for secrets (API keys, passwords, etc.)
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: ^(\.env\.example|\.env\.development|package-lock\.json|frontend/)
+
+# Configuration
+default_language_version:
+  python: python3.13
+
+# Files to exclude from all hooks
+exclude: |
+  (?x)^(
+      __pycache__/.*|
+      \.venv/.*|
+      venv/.*|
+      \.git/.*|
+      \.pytest_cache/.*|
+      \.mypy_cache/.*|
+      migrations/versions/.*|
+      alembic/versions/.*|
+      frontend/.*|
+      node_modules/.*|
+      .*\.pyc|
+      .*\.pyo
+  )$
+

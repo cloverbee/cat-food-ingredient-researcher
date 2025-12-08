@@ -1,0 +1,80 @@
+# Flake8 Configuration - Relaxed Rules for Development
+# Documentation: https://flake8.pycqa.org/en/latest/user/configuration.html
+
+[flake8]
+# Maximum line length (relaxed from default 79)
+max-line-length = 120
+
+# Maximum complexity (relaxed)
+max-complexity = 15
+
+# Exclude common directories
+exclude =
+    .git,
+    __pycache__,
+    .venv,
+    venv,
+    env,
+    build,
+    dist,
+    *.egg-info,
+    .tox,
+    .pytest_cache,
+    migrations/versions,
+    alembic/versions,
+    node_modules,
+    frontend
+
+# Ignore specific rules (relaxed for development)
+# W503: line break before binary operator (black compatibility)
+# W504: line break after binary operator
+# E203: whitespace before ':' (black compatibility)
+# E501: line too long (handled by max-line-length)
+# E402: module level import not at top of file
+# D100-D107: missing docstrings (relaxed - can enable later)
+# C901: function too complex (handled by max-complexity)
+# N802, N803, N806: naming conventions (relaxed)
+ignore =
+    W503,
+    W504,
+    E203,
+    E501,
+    E402,
+    D100,
+    D101,
+    D102,
+    D103,
+    D104,
+    D105,
+    D107,
+    C901,
+    N802,
+    N803,
+    N806
+
+# Per-file ignores (no inline comments allowed)
+per-file-ignores =
+    __init__.py:F401,F403
+    src/domain/models/__init__.py:F401
+    src/domain/models/*.py:E501,F401
+    src/domain/repositories/*.py:F401
+    src/core/config.py:E501
+    migrations/*.py:E501,F401
+    seed_data.py:E501,F541,C401
+    src/api/controllers/*.py:B008
+    src/scripts/*.py:F401,F841
+    src/infrastructure/ai/*.py:F401,B001,E722
+    test_*.py:E501,F401,F811
+
+# Show source code for errors
+show-source = True
+
+# Show the pep8 reason for each error
+show-pep8 = True
+
+# Count the number of occurrences of each error/warning code
+count = True
+
+# Print total number of errors
+statistics = True
+

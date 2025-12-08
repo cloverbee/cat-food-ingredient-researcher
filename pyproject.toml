@@ -1,0 +1,41 @@
+# Black Configuration - Python Code Formatter
+# Documentation: https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html
+
+[tool.black]
+# Line length (should match flake8)
+line-length = 120
+
+# Python version target
+target-version = ['py311', 'py312', 'py313']
+
+# Include specific file patterns
+include = '\.pyi?$'
+
+# Exclude directories and files
+extend-exclude = '''
+/(
+    # Directories
+    \.git
+    | \.venv
+    | venv
+    | env
+    | build
+    | dist
+    | \.egg-info
+    | __pycache__
+    | \.tox
+    | \.pytest_cache
+    | migrations/versions
+    | alembic/versions
+    | node_modules
+    | frontend
+    | logs
+)/
+'''
+
+# Enable color output
+color = true
+
+# Preview style (enable newer features)
+# preview = true
+

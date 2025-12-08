@@ -1,8 +1,11 @@
-from sqlalchemy.ext.asyncio import AsyncSession
+from typing import List, Optional
+
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.domain.models.ingredient import Ingredient
 from src.domain.schemas.ingredient import IngredientCreate, IngredientUpdate
-from typing import List, Optional
+
 
 class IngredientRepository:
     def __init__(self, db: AsyncSession):

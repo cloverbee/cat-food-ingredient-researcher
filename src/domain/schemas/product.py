@@ -1,6 +1,9 @@
+from typing import List, Optional
+
 from pydantic import BaseModel
-from typing import Optional, List
+
 from src.domain.schemas.ingredient import IngredientRead
+
 
 class ProductBase(BaseModel):
     name: str
@@ -11,12 +14,15 @@ class ProductBase(BaseModel):
     description: Optional[str] = None
     full_ingredient_list: Optional[str] = None
 
+
 class ProductCreate(ProductBase):
     ingredient_ids: Optional[List[int]] = []
+
 
 class ProductUpdate(ProductBase):
     name: Optional[str] = None
     brand: Optional[str] = None
+
 
 class ProductRead(ProductBase):
     id: int

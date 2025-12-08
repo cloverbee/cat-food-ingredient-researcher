@@ -1,9 +1,10 @@
 import csv
 import io
-from typing import List, Dict
-from src.domain.services.product_service import ProductService
-from src.domain.services.ingredient_service import IngredientService
+from typing import Dict, List
+
 from src.domain.schemas.product import ProductCreate, ProductRead
+from src.domain.services.ingredient_service import IngredientService
+from src.domain.services.product_service import ProductService
 
 
 class IngestionService:
@@ -15,14 +16,14 @@ class IngestionService:
         """Parse comma-separated ingredient string into a list of ingredient names."""
         if not raw_ingredients:
             return []
-        return [name.strip() for name in raw_ingredients.split(',') if name.strip()]
+        return [name.strip() for name in raw_ingredients.split(",") if name.strip()]
 
     async def ingest_product_from_row(self, row: Dict[str, str]) -> ProductRead:
         """Process a single CSV row and create a product with linked ingredients."""
         # Parse ingredients if available
         ingredient_ids = []
-        raw_ingredients = row.get('full_ingredient_list')
-        
+        raw_ingredients = row.get("full_ingredient_list")
+
         if raw_ingredients:
             ingredient_names = self.parse_ingredient_list(raw_ingredients)
             if ingredient_names:
@@ -31,23 +32,23 @@ class IngestionService:
 
         # Create Product
         product_data = ProductCreate(
-            name=row.get('name'),
-            brand=row.get('brand'),
-            price=float(row.get('price', 0)),
-            age_group=row.get('age_group'),
-            food_type=row.get('food_type'),
-            description=row.get('description'),
+            name=row.get("name"),
+            brand=row.get("brand"),
+            price=float(row.get("price", 0)),
+            age_group=row.get("age_group"),
+            food_type=row.get("food_type"),
+            description=row.get("description"),
             full_ingredient_list=raw_ingredients,
-            ingredient_ids=ingredient_ids
+            ingredient_ids=ingredient_ids,
         )
-        
+
         return await self.product_service.create_product(product_data)
 
     async def ingest_csv_content(self, csv_content: str) -> Dict[str, str]:
         """Process entire CSV content and return ingestion summary."""
         csv_reader = csv.DictReader(io.StringIO(csv_content))
         products_created = 0
-        
+
         for row in csv_reader:
             try:
                 await self.ingest_product_from_row(row)

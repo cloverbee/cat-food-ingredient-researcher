@@ -1,10 +1,13 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from sqlalchemy.orm import selectinload
-from src.domain.models.product import CatFoodProduct
-from src.domain.models.ingredient import Ingredient
-from src.domain.schemas.product import ProductCreate, ProductUpdate
 from typing import List, Optional
+
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
+
+from src.domain.models.ingredient import Ingredient
+from src.domain.models.product import CatFoodProduct
+from src.domain.schemas.product import ProductCreate, ProductUpdate
+
 
 class ProductRepository:
     def __init__(self, db: AsyncSession):
@@ -18,9 +21,9 @@ class ProductRepository:
             age_group=product.age_group,
             food_type=product.food_type,
             description=product.description,
-            full_ingredient_list=product.full_ingredient_list
+            full_ingredient_list=product.full_ingredient_list,
         )
-        
+
         if product.ingredient_ids:
             stmt = select(Ingredient).where(Ingredient.id.in_(product.ingredient_ids))
             result = await self.db.execute(stmt)
@@ -44,9 +47,6 @@ class ProductRepository:
 
     async def get_all(self, skip: int = 0, limit: int = 100) -> List[CatFoodProduct]:
         result = await self.db.execute(
-            select(CatFoodProduct)
-            .options(selectinload(CatFoodProduct.ingredients))
-            .offset(skip)
-            .limit(limit)
+            select(CatFoodProduct).options(selectinload(CatFoodProduct.ingredients)).offset(skip).limit(limit)
         )
         return result.scalars().all()

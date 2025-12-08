@@ -1,6 +1,8 @@
+from typing import List, Optional
+
 from src.domain.repositories.product_repository import ProductRepository
 from src.domain.schemas.product import ProductCreate, ProductRead
-from typing import List, Optional
+
 
 class ProductService:
     def __init__(self, repository: ProductRepository):
