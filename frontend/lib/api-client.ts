@@ -12,7 +12,10 @@ import type {
   IngestResponse,
 } from "./api-types";
 
-// Validate API URL
+// API URL Configuration
+// Development: defaults to http://localhost:8000
+// Production: set NEXT_PUBLIC_API_URL environment variable in Vercel to your Railway backend URL
+// Example: https://your-app.up.railway.app
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 if (!process.env.NEXT_PUBLIC_API_URL && typeof window === "undefined") {

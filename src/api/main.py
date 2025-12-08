@@ -8,14 +8,33 @@ from src.infrastructure.ai.llama_index_config import configure_llama_index
 app = FastAPI(title=settings.PROJECT_NAME, openapi_url=f"{settings.API_V1_STR}/openapi.json")
 
 # Configure CORS
+# Get allowed origins from environment or use defaults
+import os
+
+allowed_origins = [
+    "http://localhost:3000",  # Next.js frontend (default)
+    "http://localhost:3001",  # Next.js frontend (alternate port)
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3001",
+]
+
+# Add production frontend URL from environment if provided
+frontend_url = os.getenv("FRONTEND_URL")
+if frontend_url:
+    allowed_origins.append(frontend_url)
+
+# For production: add Vercel deployment URLs
+# Pattern for Vercel: https://your-app.vercel.app and https://your-app-*.vercel.app (preview deployments)
+vercel_domain = os.getenv("VERCEL_DOMAIN")
+if vercel_domain:
+    allowed_origins.append(f"https://{vercel_domain}")
+    # Vercel preview deployments follow pattern: your-app-git-branch-username.vercel.app
+    # We'll use allow_origin_regex for wildcard support
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",  # Next.js frontend (default)
-        "http://localhost:3001",  # Next.js frontend (alternate port)
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:3001",
-    ],
+    allow_origins=allowed_origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",  # Allow all Vercel preview deployments
     allow_credentials=True,
     allow_methods=["*"],  # Allow all HTTP methods
     allow_headers=["*"],  # Allow all headers
