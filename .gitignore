@@ -161,3 +161,4 @@ yarn-error.log*
 # Docker
 *.pid
 .dockerignore
+requirements.txt.backup
