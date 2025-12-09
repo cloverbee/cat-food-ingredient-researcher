@@ -18,7 +18,9 @@ class Settings(BaseSettings):
     # Database Configuration
     # Railway provides DATABASE_URL directly; use it if available, otherwise construct from components
     DATABASE_URL_PROVIDED: Optional[str] = Field(
-        default=None, description="Full database URL (auto-provided by Railway or other platforms)"
+        default=None,
+        validation_alias="DATABASE_URL",
+        description="Full database URL (auto-provided by Railway or other platforms)",
     )
     POSTGRES_SERVER: str = Field(default="localhost", description="PostgreSQL server host")
     POSTGRES_USER: str = Field(default="postgres", description="PostgreSQL username")
