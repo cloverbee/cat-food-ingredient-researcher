@@ -82,3 +82,4 @@ export interface ProductFilters {
   max_price?: number | null;
 }
 
+

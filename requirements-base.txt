@@ -1,0 +1,54 @@
+# Core Application Dependencies (unpinned for initial resolution)
+# FastAPI and Server
+fastapi>=0.115.0
+uvicorn>=0.30.0
+python-multipart
+python-dotenv
+
+# Database
+SQLAlchemy>=2.0.0
+asyncpg
+psycopg2-binary
+alembic
+
+# Authentication
+fastapi-users[sqlalchemy]>=15.0.0
+bcrypt
+PyJWT
+
+# LlamaIndex and AI
+llama-index>=0.14.0
+llama-index-core>=0.14.0
+llama-index-llms-gemini>=0.6.0
+llama-index-embeddings-gemini>=0.4.0
+llama-index-llms-openai>=0.6.0
+llama-index-embeddings-openai>=0.5.0
+llama-index-vector-stores-qdrant>=0.9.0
+llama-index-readers-file>=0.5.0
+google-generativeai>=0.8.5
+openai
+
+# Vector Database
+qdrant-client>=1.16.0
+
+# Data Processing
+pandas
+numpy
+
+# Pydantic
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# HTTP Client
+httpx
+requests
+
+# Development Tools
+black
+flake8
+flake8-bugbear
+flake8-comprehensions
+flake8-simplify
+isort
+pre-commit
+detect-secrets

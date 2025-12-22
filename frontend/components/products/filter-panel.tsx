@@ -117,3 +117,4 @@ export function FilterPanel({ filters, onFiltersChange }: FilterPanelProps) {
   );
 }
 
+

@@ -108,7 +108,7 @@ class APIClient {
 
   // Products API
   async getProducts(): Promise<ProductRead[]> {
-    const response = await this.client.get<ProductRead[]>(`${API_V1}/products`);
+    const response = await this.client.get<ProductRead[]>(`${API_V1}/products/`);
     return response.data;
   }
 
@@ -118,7 +118,7 @@ class APIClient {
   }
 
   async createProduct(product: ProductCreate): Promise<ProductRead> {
-    const response = await this.client.post<ProductRead>(`${API_V1}/products`, product);
+    const response = await this.client.post<ProductRead>(`${API_V1}/products/`, product);
     return response.data;
   }
 
@@ -133,7 +133,7 @@ class APIClient {
 
   // Ingredients API
   async getIngredients(): Promise<IngredientRead[]> {
-    const response = await this.client.get<IngredientRead[]>(`${API_V1}/ingredients`);
+    const response = await this.client.get<IngredientRead[]>(`${API_V1}/ingredients/`);
     return response.data;
   }
 
@@ -143,7 +143,7 @@ class APIClient {
   }
 
   async createIngredient(ingredient: IngredientCreate): Promise<IngredientRead> {
-    const response = await this.client.post<IngredientRead>(`${API_V1}/ingredients`, ingredient);
+    const response = await this.client.post<IngredientRead>(`${API_V1}/ingredients/`, ingredient);
     return response.data;
   }
 
@@ -161,7 +161,7 @@ class APIClient {
 
   // Search API
   async search(query: string): Promise<SearchResponse> {
-    const response = await this.client.post<SearchResponse>(`${API_V1}/search`, {
+    const response = await this.client.post<SearchResponse>(`${API_V1}/search/`, {
       query,
     } as SearchQuery);
     return response.data;
@@ -182,7 +182,7 @@ class APIClient {
       throw new Error("Invalid CSV format");
     }
 
-    const response = await this.client.post<IngestResponse>(`${API_V1}/admin/ingest`, {
+    const response = await this.client.post<IngestResponse>(`${API_V1}/admin/ingest/`, {
       file_content: fileContent,
       filename,
     } as IngestRequest);
