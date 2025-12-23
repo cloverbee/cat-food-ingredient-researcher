@@ -33,3 +33,4 @@ echo "📡 Available API endpoints:"
 cat ./openapi.json | jq -r '.paths | keys[]'
 
 
+

@@ -66,7 +66,7 @@ We've removed all hard-coded secrets from the codebase. The application **will n
 ### Files You Need to Know About
 
 - `.env.example` - Template with all available variables (committed to git)
-- `.env.development` - Development defaults (committed to git) 
+- `.env.development` - Development defaults (committed to git)
 - `.env` - Your personal config **NEVER commit this!** (gitignored)
 
 ---
@@ -136,4 +136,3 @@ POSTGRES_PASSWORD=your_password_here
 For detailed security information, see [SECURITY.md](./SECURITY.md)
 
 For general project setup, see [README.md](./README.md)
-

@@ -22,6 +22,8 @@ class ProductRepository:
             food_type=product.food_type,
             description=product.description,
             full_ingredient_list=product.full_ingredient_list,
+            image_url=product.image_url,
+            shopping_url=product.shopping_url,
         )
 
         if product.ingredient_ids:

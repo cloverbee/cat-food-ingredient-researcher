@@ -1,6 +1,6 @@
-name,brand,price,age_group,food_type,description,full_ingredient_list
-Ocean Feast,WhiskerDelight,24.99,Adult,Wet,Rich tuna entrée for daily feeding,"Tuna, Salmon, Chicken Broth, Sunflower Oil, Minerals"
-Kitten Crunchies,PurrfectStart,12.49,Kitten,Dry,High-protein kibble for growing kittens,"Chicken Meal, Brown Rice, Pea Protein, Fish Oil, Vitamins"
-Senior Comfort,BellaAged,18.75,Senior,Dry,Joint-support formula for senior cats,"Turkey Meal, Oatmeal, Glucosamine, Chondroitin, Cranberries"
-Sensitive Bites,GentlePaws,16.10,Adult,Dry,Limited-ingredient recipe for sensitive stomachs,"Duck, Sweet Potato, Flaxseed, Chicory Root, Probiotics"
-HydraBoost Stew,MistyMeadow,27.40,Adult,Wet,Hydrating stew with extra broth,"Chicken, Bone Broth, Pumpkin, Carrots, Taurine"
+name,brand,price,age_group,food_type,description,full_ingredient_list,image_url,shopping_url
+Ocean Feast,WhiskerDelight,24.99,Adult,Wet,Rich tuna entrée for daily feeding,"Tuna, Salmon, Chicken Broth, Sunflower Oil, Minerals",https://example.com/ocean-feast.jpg,https://amazon.com/dp/EXAMPLE123?tag=yoursite-20
+Kitten Crunchies,PurrfectStart,12.49,Kitten,Dry,High-protein kibble for growing kittens,"Chicken Meal, Brown Rice, Pea Protein, Fish Oil, Vitamins",https://example.com/kitten-crunchies.jpg,https://amazon.com/dp/EXAMPLE456?tag=yoursite-20
+Senior Comfort,BellaAged,18.75,Senior,Dry,Joint-support formula for senior cats,"Turkey Meal, Oatmeal, Glucosamine, Chondroitin, Cranberries",https://example.com/senior-comfort.jpg,https://amazon.com/dp/EXAMPLE789?tag=yoursite-20
+Sensitive Bites,GentlePaws,16.10,Adult,Dry,Limited-ingredient recipe for sensitive stomachs,"Duck, Sweet Potato, Flaxseed, Chicory Root, Probiotics",https://example.com/sensitive-bites.jpg,https://amazon.com/dp/EXAMPLE012?tag=yoursite-20
+HydraBoost Stew,MistyMeadow,27.40,Adult,Wet,Hydrating stew with extra broth,"Chicken, Bone Broth, Pumpkin, Carrots, Taurine",https://example.com/hydraboost.jpg,https://amazon.com/dp/EXAMPLE345?tag=yoursite-20

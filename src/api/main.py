@@ -5,7 +5,14 @@ from src.api.controllers import ingestion_controller, ingredient_controller, pro
 from src.core.config import settings
 from src.infrastructure.ai.llama_index_config import configure_llama_index
 
-app = FastAPI(title=settings.PROJECT_NAME, openapi_url=f"{settings.API_V1_STR}/openapi.json")
+# Conditional docs configuration
+docs_config = {}
+if settings.ENVIRONMENT == "production":
+    docs_config = {"docs_url": None, "redoc_url": None, "openapi_url": None}
+else:
+    docs_config = {"openapi_url": f"{settings.API_V1_STR}/openapi.json"}
+
+app = FastAPI(title=settings.PROJECT_NAME, **docs_config)
 
 # Configure CORS
 # Get allowed origins from environment or use defaults

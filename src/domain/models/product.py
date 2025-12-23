@@ -24,6 +24,8 @@ class CatFoodProduct(Base):
     food_type = Column(String, index=True, nullable=True)  # wet, dry
     description = Column(Text, nullable=True)
     full_ingredient_list = Column(Text, nullable=True)  # Raw text of ingredients
+    image_url = Column(String, nullable=True)  # Product image URL
+    shopping_url = Column(String, nullable=True)  # Affiliate/shopping link to purchase
 
     # Qdrant Point ID (UUID stored as string)
     embedding_id = Column(String, nullable=True)

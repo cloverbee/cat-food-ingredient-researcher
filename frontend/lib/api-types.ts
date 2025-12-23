@@ -28,6 +28,8 @@ export interface ProductBase {
   food_type?: string | null;
   description?: string | null;
   full_ingredient_list?: string | null;
+  image_url?: string | null;
+  shopping_url?: string | null;
 }
 
 export interface ProductCreate extends ProductBase {
@@ -42,6 +44,8 @@ export interface ProductUpdate {
   food_type?: string | null;
   description?: string | null;
   full_ingredient_list?: string | null;
+  image_url?: string | null;
+  shopping_url?: string | null;
 }
 
 export interface ProductRead extends ProductBase {
@@ -81,5 +85,6 @@ export interface ProductFilters {
   min_price?: number | null;
   max_price?: number | null;
 }
+
 
 

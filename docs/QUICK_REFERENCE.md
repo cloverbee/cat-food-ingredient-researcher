@@ -291,4 +291,3 @@ alias catfood-seed="cd ~/workspace/cat-food-ingredient-researcher && source .ven
 - Check `FRONTEND_SETUP.md` for frontend-specific info
 - Check `frontend/README.md` for component documentation
 - Visit API docs at http://localhost:8000/docs
-

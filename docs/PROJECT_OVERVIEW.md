@@ -268,4 +268,3 @@ Private project
 ## 👥 Contact
 
 For questions or issues, please contact the development team.
-

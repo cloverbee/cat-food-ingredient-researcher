@@ -332,4 +332,3 @@ If hooks are blocking you:
 ---
 
 **Last Updated:** December 8, 2025
-

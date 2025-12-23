@@ -12,6 +12,7 @@ interface SearchBarProps {
 
 export function SearchBar({ onSearch, isLoading }: SearchBarProps) {
   const [query, setQuery] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,23 +22,44 @@ export function SearchBar({ onSearch, isLoading }: SearchBarProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
-      <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+    <form 
+      onSubmit={handleSubmit} 
+      className={`relative max-w-3xl mx-auto transition-all duration-500 ease-out ${isFocused ? 'scale-105' : 'scale-100'}`}
+    >
+      <div 
+        className={`
+          relative flex items-center 
+          bg-background/60 backdrop-blur-xl 
+          rounded-full shadow-2xl 
+          border transition-all duration-300
+          ${isFocused ? 'ring-4 ring-primary/20 border-primary' : 'border-white/20 hover:border-white/40'}
+        `}
+      >
+        <Search className={`ml-6 h-6 w-6 transition-colors ${isFocused ? 'text-primary' : 'text-muted-foreground'}`} />
         <Input
           type="text"
           placeholder="Search for cat food... (e.g., 'Find wet food for kittens')"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="pl-10"
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          className="flex-1 border-none shadow-none focus-visible:ring-0 bg-transparent h-16 pl-4 text-lg rounded-full placeholder:text-muted-foreground/60"
           disabled={isLoading}
         />
+        <Button 
+          type="submit" 
+          disabled={isLoading || !query.trim()}
+          size="lg"
+          className="rounded-full mr-2 h-12 px-8 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
+        >
+          {isLoading ? (
+            <div className="flex items-center gap-2">
+              <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+              <span>Searching...</span>
+            </div>
+          ) : 'Search'}
+        </Button>
       </div>
-      <Button type="submit" disabled={isLoading || !query.trim()}>
-        {isLoading ? 'Searching...' : 'Search'}
-      </Button>
     </form>
   );
 }
-
-

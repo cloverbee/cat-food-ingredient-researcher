@@ -215,4 +215,3 @@ Required variables:
 If you have questions about the security configuration, please contact the development team or security officer.
 
 **Last Updated:** December 8, 2025
-

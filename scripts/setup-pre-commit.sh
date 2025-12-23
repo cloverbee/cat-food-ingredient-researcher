@@ -33,7 +33,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo -e "${BLUE}Running pre-commit on all files...${NC}"
     echo "This may take a moment and will format all Python files."
     echo ""
-    
+
     if pre-commit run --all-files; then
         echo ""
         echo -e "${GREEN}✓ All checks passed!${NC}"
@@ -60,4 +60,3 @@ echo "  pre-commit run                # Run on staged files"
 echo "  SKIP=flake8 git commit        # Skip specific hook"
 echo "  git commit --no-verify        # Skip all hooks (not recommended)"
 echo ""
-

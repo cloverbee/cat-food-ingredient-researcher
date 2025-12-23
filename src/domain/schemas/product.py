@@ -13,6 +13,8 @@ class ProductBase(BaseModel):
     food_type: Optional[str] = None
     description: Optional[str] = None
     full_ingredient_list: Optional[str] = None
+    image_url: Optional[str] = None
+    shopping_url: Optional[str] = None
 
 
 class ProductCreate(ProductBase):

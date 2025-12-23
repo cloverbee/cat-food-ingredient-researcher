@@ -30,15 +30,27 @@ class IngestionService:
                 ingredients = await self.ingredient_service.get_or_create_ingredients(ingredient_names)
                 ingredient_ids = [ing.id for ing in ingredients]
 
+        # Parse price (handle empty strings)
+        price = row.get("price")
+        if price:
+            try:
+                price = float(price) if price else None
+            except (ValueError, TypeError):
+                price = None
+        else:
+            price = None
+
         # Create Product
         product_data = ProductCreate(
             name=row.get("name"),
             brand=row.get("brand"),
-            price=float(row.get("price", 0)),
-            age_group=row.get("age_group"),
-            food_type=row.get("food_type"),
-            description=row.get("description"),
-            full_ingredient_list=raw_ingredients,
+            price=price,
+            age_group=row.get("age_group") or None,
+            food_type=row.get("food_type") or None,
+            description=row.get("description") or None,
+            full_ingredient_list=raw_ingredients or None,
+            image_url=row.get("image_url") or None,
+            shopping_url=row.get("shopping_url") or None,
             ingredient_ids=ingredient_ids,
         )
 

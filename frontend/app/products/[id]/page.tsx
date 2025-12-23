@@ -2,11 +2,12 @@
 
 import { use } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useProduct, useDeleteProduct } from '@/lib/api-hooks';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Edit, Trash2 } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, ExternalLink } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -95,6 +96,48 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
+          {/* Product Image */}
+          {product.image_url && (
+            <Card>
+              <CardContent className="p-0">
+                <div className="relative w-full h-96 overflow-hidden rounded-lg">
+                  <Image
+                    src={product.image_url}
+                    alt={product.name}
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 768px) 100vw, 896px"
+                    priority
+                    unoptimized
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Shopping Link */}
+          {product.shopping_url && (
+            <Card>
+              <CardContent className="p-6">
+                <Button
+                  asChild
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-lg py-6"
+                  size="lg"
+                >
+                  <a
+                    href={product.shopping_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-3"
+                  >
+                    <span>Buy on Amazon</span>
+                    <ExternalLink className="w-5 h-5" />
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Basic Info Card */}
           <Card>
             <CardHeader>
@@ -197,5 +240,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     </div>
   );
 }
+
 
 
