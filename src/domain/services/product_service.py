@@ -16,3 +16,6 @@ class ProductService:
 
     async def get_products(self, skip: int = 0, limit: int = 100) -> List[ProductRead]:
         return await self.repository.get_all(skip, limit)
+
+    async def delete_product(self, product_id: int) -> bool:
+        return await self.repository.delete(product_id)

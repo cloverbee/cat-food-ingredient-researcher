@@ -5,9 +5,9 @@ from src.api.controllers import ingestion_controller, ingredient_controller, pro
 from src.core.config import settings
 from src.infrastructure.ai.llama_index_config import configure_llama_index
 
-# Conditional docs configuration
+# Conditional docs configuration - disable in production
 docs_config = {}
-if settings.ENVIRONMENT == "production":
+if settings.is_production:
     docs_config = {"docs_url": None, "redoc_url": None, "openapi_url": None}
 else:
     docs_config = {"openapi_url": f"{settings.API_V1_STR}/openapi.json"}

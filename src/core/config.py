@@ -13,7 +13,15 @@ class Settings(BaseSettings):
     # Application
     PROJECT_NAME: str = "Cat Food Ingredient Researcher"
     API_V1_STR: str = "/api/v1"
+    # Railway sets RAILWAY_ENVIRONMENT automatically; use it to detect production
+    RAILWAY_ENVIRONMENT: Optional[str] = Field(default=None, description="Auto-set by Railway")
     ENVIRONMENT: str = Field(default="development", description="Environment: development, staging, production")
+
+    @computed_field
+    @property
+    def is_production(self) -> bool:
+        """Check if running in production (explicit ENVIRONMENT or Railway production)."""
+        return self.ENVIRONMENT == "production" or self.RAILWAY_ENVIRONMENT == "production"
 
     # Database Configuration
     # Railway provides DATABASE_URL directly; use it if available, otherwise construct from components

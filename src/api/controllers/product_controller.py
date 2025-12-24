@@ -32,3 +32,11 @@ async def read_product(product_id: int, service: ProductService = Depends(get_se
     if product is None:
         raise HTTPException(status_code=404, detail="Product not found")
     return product
+
+
+@router.delete("/{product_id}")
+async def delete_product(product_id: int, service: ProductService = Depends(get_service)):
+    deleted = await service.delete_product(product_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return {"message": "Product deleted successfully"}

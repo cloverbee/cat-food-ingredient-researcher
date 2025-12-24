@@ -75,20 +75,22 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 <p className="text-muted-foreground mt-1">{product.brand}</p>
               </div>
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" size="icon" title="Edit product">
-                <Edit className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="destructive"
-                size="icon"
-                title="Delete product"
-                onClick={handleDelete}
-                disabled={isDeleting}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
+{process.env.NODE_ENV !== 'production' && (
+              <div className="flex gap-2">
+                <Button variant="outline" size="icon" title="Edit product">
+                  <Edit className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  title="Delete product"
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </header>

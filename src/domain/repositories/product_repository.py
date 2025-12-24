@@ -52,3 +52,11 @@ class ProductRepository:
             select(CatFoodProduct).options(selectinload(CatFoodProduct.ingredients)).offset(skip).limit(limit)
         )
         return result.scalars().all()
+
+    async def delete(self, product_id: int) -> bool:
+        product = await self.get(product_id)
+        if product is None:
+            return False
+        await self.db.delete(product)
+        await self.db.commit()
+        return True
