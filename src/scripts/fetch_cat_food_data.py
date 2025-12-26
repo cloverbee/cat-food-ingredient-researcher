@@ -40,7 +40,8 @@ class CatFoodProduct:
     food_type: Optional[str] = None
     description: Optional[str] = None
     full_ingredient_list: Optional[str] = None
-    url: Optional[str] = None
+    image_url: Optional[str] = None
+    shopping_url: Optional[str] = None
 
 
 class BaseScraper:
@@ -99,6 +100,22 @@ class BaseScraper:
         elif "dry" in food_type_lower or "kibble" in food_type_lower:
             return "Dry"
         return food_type.capitalize()
+
+    def extract_image_url(self, container, base_url: str) -> Optional[str]:
+        """
+        Best-effort image extraction from a product card.
+        Many sites lazy-load images into data-* attributes.
+        """
+        if not container:
+            return None
+        img = container.find("img")
+        if not img:
+            return None
+        for attr in ("src", "data-src", "data-original", "data-lazy-src", "data-img-url"):
+            val = img.get(attr)
+            if val and isinstance(val, str) and val.strip():
+                return urljoin(base_url, val.strip())
+        return None
 
     def sleep(self):
         """Sleep to respect rate limits."""
@@ -167,12 +184,13 @@ class AmazonScraper(BaseScraper):
 
         # URL
         link_elem = div.find("a", class_="a-link-normal")
-        url = None
+        shopping_url = None
         if link_elem and link_elem.get("href"):
-            url = urljoin(self.BASE_URL, link_elem["href"])
+            shopping_url = urljoin(self.BASE_URL, link_elem["href"])
 
         # Description (limited in search results)
         description = None
+        image_url = self.extract_image_url(div, self.BASE_URL)
 
         return CatFoodProduct(
             name=name,
@@ -180,7 +198,8 @@ class AmazonScraper(BaseScraper):
             price=price,
             food_type=self.normalize_food_type("dry"),  # Will be set by caller
             description=description,
-            url=url,
+            image_url=image_url,
+            shopping_url=shopping_url,
         )
 
 
@@ -244,16 +263,19 @@ class ChewyScraper(BaseScraper):
 
         # URL
         link_elem = div.find("a")
-        url = None
+        shopping_url = None
         if link_elem and link_elem.get("href"):
-            url = urljoin(self.BASE_URL, link_elem["href"])
+            shopping_url = urljoin(self.BASE_URL, link_elem["href"])
+
+        image_url = self.extract_image_url(div, self.BASE_URL)
 
         return CatFoodProduct(
             name=name,
             brand=brand,
             price=price,
             food_type=self.normalize_food_type("dry"),  # Will be set by caller
-            url=url,
+            image_url=image_url,
+            shopping_url=shopping_url,
         )
 
 
@@ -317,23 +339,36 @@ class PetcoScraper(BaseScraper):
 
         # URL
         link_elem = div.find("a")
-        url = None
+        shopping_url = None
         if link_elem and link_elem.get("href"):
-            url = urljoin(self.BASE_URL, link_elem["href"])
+            shopping_url = urljoin(self.BASE_URL, link_elem["href"])
+
+        image_url = self.extract_image_url(div, self.BASE_URL)
 
         return CatFoodProduct(
             name=name,
             brand=brand,
             price=price,
             food_type=self.normalize_food_type("dry"),  # Will be set by caller
-            url=url,
+            image_url=image_url,
+            shopping_url=shopping_url,
         )
 
 
 def save_to_csv(products: List[CatFoodProduct], filename: str):
     """Save products to CSV file."""
     with open(filename, "w", newline="", encoding="utf-8") as csvfile:
-        fieldnames = ["name", "brand", "price", "age_group", "food_type", "description", "full_ingredient_list"]
+        fieldnames = [
+            "name",
+            "brand",
+            "price",
+            "age_group",
+            "food_type",
+            "description",
+            "full_ingredient_list",
+            "image_url",
+            "shopping_url",
+        ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
@@ -347,6 +382,8 @@ def save_to_csv(products: List[CatFoodProduct], filename: str):
                     "food_type": product.food_type or "",
                     "description": product.description or "",
                     "full_ingredient_list": product.full_ingredient_list or "",
+                    "image_url": product.image_url or "",
+                    "shopping_url": product.shopping_url or "",
                 }
             )
 

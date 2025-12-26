@@ -38,7 +38,9 @@ echo -e "${GREEN}✓ Environment variables loaded${NC}"
 echo ""
 
 # Validate required environment variables
-REQUIRED_VARS=("POSTGRES_PASSWORD" "SECRET_KEY" "GEMINI_API_KEY")
+# NOTE: The backend can run without AI configured (GEMINI_API_KEY is optional unless you use AI search,
+# and it's only required in production). SECRET_KEY is also only required in production.
+REQUIRED_VARS=("POSTGRES_PASSWORD")
 MISSING_VARS=()
 
 for VAR in "${REQUIRED_VARS[@]}"; do
@@ -108,10 +110,8 @@ echo "   Backend will be available at: http://localhost:8000"
 echo "   API docs at: http://localhost:8000/docs"
 echo ""
 source .venv/bin/activate
-cd src
-python -m uvicorn api.main:app --reload --port 8000 > ../logs/backend.log 2>&1 &
+python -m uvicorn src.api.main:app --reload --port 8000 > logs/backend.log 2>&1 &
 BACKEND_PID=$!
-cd ..
 
 # Wait a moment for backend to start
 sleep 3

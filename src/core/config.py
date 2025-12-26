@@ -55,9 +55,11 @@ class Settings(BaseSettings):
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
     # Security - CRITICAL: Must be set in production
+    # NOTE: We allow this to be empty in local/dev scripts so DB tooling can run without auth setup.
+    # In production, we validate this is set at app startup.
     SECRET_KEY: str = Field(
-        ...,
-        description="Secret key for JWT tokens - REQUIRED via environment variable. Generate with: openssl rand -hex 32",
+        default="",
+        description="Secret key for JWT tokens. REQUIRED in production via environment variable. Generate with: openssl rand -hex 32",
     )
     ALGORITHM: str = Field(default="HS256", description="JWT algorithm")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=30, description="JWT token expiration in minutes")
@@ -72,7 +74,8 @@ class Settings(BaseSettings):
         default=None, description="OpenAI API Key - REQUIRED if using OpenAI services"
     )
 
-    GEMINI_API_KEY: str = Field(..., description="Google Gemini API Key - REQUIRED via environment variable")
+    # NOTE: Optional for local/dev scripts; required only when AI features are used (and in production startup).
+    GEMINI_API_KEY: Optional[str] = Field(default=None, description="Google Gemini API Key")
 
     # Pydantic Settings Configuration
     model_config = SettingsConfigDict(

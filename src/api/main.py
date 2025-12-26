@@ -50,6 +50,10 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup_event():
+    # Configure LlamaIndex only when AI env vars are present.
+    # In production, GEMINI_API_KEY must be set.
+    if settings.is_production and not settings.GEMINI_API_KEY:
+        raise RuntimeError("GEMINI_API_KEY is required in production.")
     configure_llama_index()
 
 

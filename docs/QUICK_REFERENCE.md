@@ -10,13 +10,19 @@
 - API Docs: http://localhost:8000/docs
 - Frontend: http://localhost:3000
 
+### Start Backend Only
+```bash
+./start-backend.sh
+```
+- Backend: http://localhost:8000
+- API Docs: http://localhost:8000/docs
+
 ### Start Individually
 
 **Backend:**
 ```bash
 source .venv/bin/activate
-cd src
-uvicorn api.main:app --reload --port 8000
+uvicorn src.api.main:app --reload --port 8000
 ```
 
 **Frontend:**
@@ -32,6 +38,10 @@ npm run dev
 ```bash
 # Seed database
 python seed_data.py
+
+# Reset (truncate) product + ingredient data and import a CSV
+# (keeps users by default; add --include-users to wipe users too)
+python -m src.scripts.reset_and_import --yes --csv sample_products.csv
 
 # Create migration
 alembic revision --autogenerate -m "description"
@@ -280,7 +290,7 @@ git push origin branch-name
 Add to your `~/.zshrc` or `~/.bashrc`:
 
 ```bash
-alias catfood-backend="cd ~/workspace/cat-food-ingredient-researcher/src && source ../.venv/bin/activate && uvicorn api.main:app --reload --port 8000"
+alias catfood-backend="cd ~/workspace/cat-food-ingredient-researcher && source .venv/bin/activate && uvicorn src.api.main:app --reload --port 8000"
 alias catfood-frontend="cd ~/workspace/cat-food-ingredient-researcher/frontend && npm run dev"
 alias catfood-seed="cd ~/workspace/cat-food-ingredient-researcher && source .venv/bin/activate && python seed_data.py"
 ```
