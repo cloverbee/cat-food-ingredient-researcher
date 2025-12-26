@@ -102,16 +102,33 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           {product.image_url && (
             <Card>
               <CardContent className="p-0">
-                <div className="relative w-full h-96 overflow-hidden rounded-lg">
-                  <Image
-                    src={product.image_url}
-                    alt={product.name}
-                    fill
-                    className="object-contain"
-                    sizes="(max-width: 768px) 100vw, 896px"
-                    priority
-                    unoptimized
-                  />
+                <div className="relative w-full h-96 overflow-hidden rounded-lg bg-muted/20">
+                  {product.image_url.includes('catfooddb.com') ? (
+                    // Use proxy route for catfooddb.com to avoid 403 errors
+                    <img
+                      src={`/api/image-proxy?url=${encodeURIComponent(product.image_url)}`}
+                      alt={product.name}
+                      className="absolute inset-0 w-full h-full object-contain"
+                      onError={(e) => {
+                        // Fallback if image fails to load
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <Image
+                      src={product.image_url}
+                      alt={product.name}
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 768px) 100vw, 896px"
+                      priority
+                      unoptimized
+                      onError={(e) => {
+                        // Fallback if image fails to load
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -132,7 +149,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-3"
                   >
-                    <span>Buy on Amazon</span>
+                    <span>Shopping Link</span>
                     <ExternalLink className="w-5 h-5" />
                   </a>
                 </Button>

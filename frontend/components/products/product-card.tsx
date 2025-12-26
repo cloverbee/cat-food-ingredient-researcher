@@ -17,14 +17,18 @@ export function ProductCard({ product }: ProductCardProps) {
       
       {/* Product Image */}
       {product.image_url && (
-        <div className="relative w-full h-48 overflow-hidden bg-muted/20">
+        <div className="relative w-full h-64 overflow-hidden bg-muted/20">
           <Image
-            src={product.image_url}
+            src={product.image_url.includes('catfooddb.com') 
+              ? `/api/image-proxy?url=${encodeURIComponent(product.image_url)}`
+              : product.image_url}
             alt={product.name}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-110"
+            className="object-contain transition-transform duration-300 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            unoptimized
+            quality={95}
+            unoptimized={product.image_url.includes('catfooddb.com')}
+            priority={false}
             onError={(e) => {
               // Fallback if image fails to load
               e.currentTarget.style.display = 'none';
@@ -91,7 +95,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2"
               >
-                <span>Buy on Amazon</span>
+                <span>Shopping Link</span>
                 <svg
                   className="w-4 h-4"
                   fill="none"
