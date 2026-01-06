@@ -1,4 +1,24 @@
-<!-- a180b8e2-f251-4e08-9f88-cd4e05dba4cb abf9ebe2-b2d3-46fb-a941-b4a30313c275 -->
+---
+name: "Frontend Redesign Plan: \"Glass & Hero\" (2025 Modern)"
+overview: ""
+todos:
+  - id: 73c44e0c-e10e-4281-8e87-e88830ea80fe
+    content: Update globals.css with glassmorphism variables and background patterns
+    status: pending
+  - id: 0ff12f8a-1844-437c-82cb-d7bc3584c68d
+    content: Redesign SearchBar component (Hero style)
+    status: pending
+  - id: 40ea85ff-2329-4fb5-99c7-41d4cffaa426
+    content: Redesign ProductCard component (Glass style)
+    status: pending
+  - id: 95702eb5-84e0-4eb7-9644-02224b797c9d
+    content: Refactor FilterPanel for cleaner aesthetic
+    status: pending
+  - id: df026bce-bab2-4352-b6fb-17bbd9704492
+    content: Rebuild Home Page with Hero Section and new Layout
+    status: pending
+---
+
 # Frontend Redesign Plan: "Glass & Hero" (2025 Modern)
 
 This plan transforms the current functional UI into a polished, consumer-facing application with a focus on visual hierarchy, "glassmorphism" effects, and a prominent search experience.
@@ -53,11 +73,3 @@ This plan transforms the current functional UI into a polished, consumer-facing 
 
 - Ensure the sidebar collapses into a Sheet/Drawer on mobile (using standard responsive Tailwind classes).
 - Stack the Hero section vertically.
-
-### To-dos
-
-- [ ] Update globals.css with glassmorphism variables and background patterns
-- [ ] Redesign SearchBar component (Hero style)
-- [ ] Redesign ProductCard component (Glass style)
-- [ ] Refactor FilterPanel for cleaner aesthetic
-- [ ] Rebuild Home Page with Hero Section and new Layout

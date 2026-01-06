@@ -34,3 +34,6 @@ cat ./openapi.json | jq -r '.paths | keys[]'
 
 
 
+
+
+

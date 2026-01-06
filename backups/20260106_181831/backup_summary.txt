@@ -1,0 +1,9 @@
+Database Backup Summary
+==================================================
+Backup Date: 2026-01-06 18:18:31
+Database URL: localhost:5433/cat_food_research
+
+Table Statistics:
+  Products: 96 rows
+  Ingredients: 504 rows
+  Associations: 1219 rows
