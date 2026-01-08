@@ -1,16 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useProducts } from '@/lib/api-hooks';
 import { apiClient } from '@/lib/api-client';
 import { ProductCard } from '@/components/products/product-card';
 import { SearchBar } from '@/components/search/search-bar';
 import { FilterPanel } from '@/components/products/filter-panel';
-import { ProductFilters } from '@/lib/api-types';
+import { ProductFilters, ProductRead } from '@/lib/api-types';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Header } from '@/components/layout/header';
-import { ArrowDown } from 'lucide-react';
+import { ArrowDown, Sparkles, X, ChevronRight } from 'lucide-react';
 
 export default function Home() {
   const { data: products, isLoading, error } = useProducts();
@@ -29,6 +29,37 @@ export default function Home() {
       setIsSearching(false);
     }
   };
+
+  // Parse search results to extract product names and match with products
+  const matchedProducts = useMemo(() => {
+    if (!searchResult || !products) return [];
+
+    // Extract product names from search result
+    // Format: "- Product Name by Brand ($price) - food_type food for age_group"
+    const productLines = searchResult
+      .split('\n')
+      .filter(line => line.trim().startsWith('-') && line.includes(' by '));
+
+    const matched: ProductRead[] = [];
+
+    productLines.forEach((line) => {
+      // Extract product name (text between "- " and " by ")
+      const match = line.match(/^-\s*(.+?)\s+by\s+/);
+      if (match) {
+        const productName = match[1].trim();
+        // Find matching product (fuzzy match)
+        const product = products.find(p => 
+          p.name.toLowerCase().includes(productName.toLowerCase()) ||
+          productName.toLowerCase().includes(p.name.toLowerCase())
+        );
+        if (product && !matched.find(p => p.id === product.id)) {
+          matched.push(product);
+        }
+      }
+    });
+
+    return matched;
+  }, [searchResult, products]);
 
   const filteredProducts = products?.filter((product) => {
     if (filters.food_type && product.food_type !== filters.food_type) return false;
@@ -68,12 +99,252 @@ export default function Home() {
             </div>
 
             {searchResult && (
-              <div className="mt-8 p-6 glass rounded-2xl max-w-3xl mx-auto text-left animate-in fade-in slide-in-from-bottom-4 shadow-2xl">
-                <h3 className="font-semibold mb-3 text-lg flex items-center gap-2 text-primary">
-                  <span className="text-xl">🤖</span> AI Analysis Result
-                </h3>
-                <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
-                  <p className="whitespace-pre-wrap leading-relaxed">{searchResult}</p>
+              <div className="mt-8 max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="bg-background/95 backdrop-blur-xl rounded-2xl border border-border/50 shadow-2xl overflow-hidden">
+                  {/* Header */}
+                  <div className="flex items-center justify-between px-6 py-4 border-b border-border/50 bg-gradient-to-r from-primary/5 via-primary/3 to-transparent">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 rounded-xl bg-primary/10 border border-primary/20 shadow-sm">
+                        <Sparkles className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg text-foreground">AI Search Results</h3>
+                        <p className="text-xs text-muted-foreground font-medium">
+                          {matchedProducts.length > 0 
+                            ? `Found ${matchedProducts.length} product(s)`
+                            : 'Powered by intelligent analysis'}
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setSearchResult(null)}
+                      className="h-9 w-9 rounded-lg hover:bg-background/80 transition-colors"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="p-6 md:p-8 bg-gradient-to-b from-background to-background/95">
+                    {/* Product List Section */}
+                    {matchedProducts.length > 0 && (
+                      <div className="space-y-3 mb-6">
+                        {matchedProducts.map((product) => (
+                          <Link
+                            key={product.id}
+                            href={`/products/${product.id}`}
+                            className="block"
+                          >
+                            <div className="group relative flex items-center gap-4 p-4 rounded-lg border border-border/50 bg-card hover:bg-muted/50 hover:border-primary/50 transition-all cursor-pointer">
+                              {product.image_url && (
+                                <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-muted/20 shrink-0">
+                                  {product.image_url.includes('catfooddb.com') ? (
+                                    <img
+                                      src={`/api/image-proxy?url=${encodeURIComponent(product.image_url)}`}
+                                      alt={product.name}
+                                      className="absolute inset-0 w-full h-full object-cover"
+                                      onError={(e) => {
+                                        e.currentTarget.style.display = 'none';
+                                      }}
+                                    />
+                                  ) : (
+                                    <img
+                                      src={product.image_url}
+                                      alt={product.name}
+                                      className="absolute inset-0 w-full h-full object-cover"
+                                      onError={(e) => {
+                                        e.currentTarget.style.display = 'none';
+                                      }}
+                                    />
+                                  )}
+                                </div>
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+                                  {product.name}
+                                </h4>
+                                <p className="text-sm text-muted-foreground truncate">
+                                  {product.brand}
+                                  {product.price && ` • $${product.price.toFixed(2)}`}
+                                  {product.food_type && ` • ${product.food_type}`}
+                                  {product.age_group && ` • ${product.age_group}`}
+                                </p>
+                              </div>
+                              <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Original AI Response Section */}
+                    <div className="space-y-6">
+                      {/* Parse and format the result */}
+                      {(() => {
+                        const lines = searchResult.split('\n').filter(line => line.trim());
+                        const sections: Array<{ type: 'table' | 'list' | 'text' | 'heading'; content: string[] }> = [];
+                        let currentSection: { type: 'table' | 'list' | 'text' | 'heading'; content: string[] } | null = null;
+                        
+                        lines.forEach((line, index) => {
+                          const trimmed = line.trim();
+                          
+                          // Detect headings
+                          if (trimmed.match(/^#{1,3}\s/) || (trimmed.length < 100 && trimmed.endsWith(':'))) {
+                            if (currentSection) sections.push(currentSection);
+                            currentSection = { type: 'heading', content: [trimmed.replace(/^#+\s/, '')] };
+                            sections.push(currentSection);
+                            currentSection = null;
+                          }
+                          // Detect table rows (contains | separator)
+                          else if (trimmed.includes('|') && trimmed.split('|').length >= 3) {
+                            if (!currentSection || currentSection.type !== 'table') {
+                              if (currentSection) sections.push(currentSection);
+                              currentSection = { type: 'table', content: [] };
+                            }
+                            currentSection.content.push(trimmed);
+                          }
+                          // Detect list items
+                          else if (trimmed.match(/^[-*•]\s/) || trimmed.match(/^\d+[.)]\s/)) {
+                            if (!currentSection || currentSection.type !== 'list') {
+                              if (currentSection) sections.push(currentSection);
+                              currentSection = { type: 'list', content: [] };
+                            }
+                            currentSection.content.push(trimmed);
+                          }
+                          // Regular text
+                          else {
+                            if (!currentSection || currentSection.type !== 'text') {
+                              if (currentSection) sections.push(currentSection);
+                              currentSection = { type: 'text', content: [] };
+                            }
+                            currentSection.content.push(trimmed);
+                          }
+                        });
+                        if (currentSection) sections.push(currentSection);
+                        
+                        return sections.map((section, idx) => {
+                          if (section.type === 'heading') {
+                            return (
+                              <h4 key={idx} className="text-xl font-bold text-foreground mt-8 mb-4 first:mt-0 pb-2 border-b border-border/30">
+                                {section.content[0]}
+                              </h4>
+                            );
+                          }
+                          
+                          if (section.type === 'table') {
+                            const rows = section.content
+                              .map(row => {
+                                if (row.includes('|')) {
+                                  const cells = row.split('|').map(cell => cell.trim()).filter(cell => cell);
+                                  // Filter out separator rows (e.g., |---|---|)
+                                  if (cells.every(cell => /^[-:]+$/.test(cell))) return null;
+                                  return cells;
+                                }
+                                return null;
+                              })
+                              .filter((row): row is string[] => row !== null && row.length > 0);
+                            
+                            if (rows.length === 0) {
+                              // Fallback to text if table parsing fails
+                              return (
+                                <div key={idx} className="space-y-2">
+                                  {section.content.map((para, paraIdx) => (
+                                    <p key={paraIdx} className="text-sm md:text-base text-foreground/85 leading-relaxed font-mono">
+                                      {para}
+                                    </p>
+                                  ))}
+                                </div>
+                              );
+                            }
+                            
+                            const isHeaderRow = (row: string[]) => {
+                              // Check if row looks like a header (short cells, mostly uppercase or title case)
+                              return row.every(cell => cell.length < 40) && 
+                                     row.some(cell => /^[A-Z]/.test(cell) || cell.split(' ').every(word => /^[A-Z]/.test(word)));
+                            };
+                            
+                            const hasHeader = rows.length > 1 && isHeaderRow(rows[0]);
+                            
+                            return (
+                              <div key={idx} className="overflow-x-auto -mx-2">
+                                <div className="inline-block min-w-full align-middle">
+                                  <div className="overflow-hidden border border-border/50 rounded-xl shadow-sm bg-card">
+                                    <table className="min-w-full divide-y divide-border/50">
+                                      {hasHeader && (
+                                        <thead className="bg-muted/40">
+                                          <tr>
+                                            {rows[0].map((cell, cellIdx) => (
+                                              <th
+                                                key={cellIdx}
+                                                className="px-6 py-3.5 text-left text-xs font-semibold text-foreground uppercase tracking-wider"
+                                              >
+                                                {cell}
+                                              </th>
+                                            ))}
+                                          </tr>
+                                        </thead>
+                                      )}
+                                      <tbody className="bg-background divide-y divide-border/30">
+                                        {rows.slice(hasHeader ? 1 : 0).map((row, rowIdx) => (
+                                          <tr key={rowIdx} className="hover:bg-muted/20 transition-colors">
+                                            {row.map((cell, cellIdx) => (
+                                              <td
+                                                key={cellIdx}
+                                                className="px-6 py-4 text-sm text-foreground/90"
+                                              >
+                                                {cell}
+                                              </td>
+                                            ))}
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          }
+                          
+                          if (section.type === 'list') {
+                            return (
+                              <ul key={idx} className="space-y-2 list-none">
+                                {section.content.map((item, itemIdx) => {
+                                  // Skip items that are already shown in the product list above
+                                  if (item.includes(' by ') && matchedProducts.length > 0) {
+                                    return null;
+                                  }
+                                  return (
+                                    <li key={itemIdx} className="flex items-start gap-3 text-foreground/90">
+                                      <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                                      <span className="text-sm md:text-base leading-relaxed">
+                                        {item.replace(/^[-*•]\s/, '').replace(/^\d+[.)]\s/, '')}
+                                      </span>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            );
+                          }
+                          
+                          // Text section
+                          return (
+                            <div key={idx} className="space-y-3">
+                              {section.content.map((para, paraIdx) => (
+                                <p
+                                  key={paraIdx}
+                                  className="text-sm md:text-base text-foreground/85 leading-relaxed"
+                                >
+                                  {para}
+                                </p>
+                              ))}
+                            </div>
+                          );
+                        });
+                      })()}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

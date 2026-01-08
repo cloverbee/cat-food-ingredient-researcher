@@ -9,7 +9,7 @@ export function Header() {
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <span className="text-2xl">🐱</span>
+            {/* <span className="text-2xl">🐱</span> */}
             <span className="font-bold text-lg hidden sm:inline-block">Cat Food Researcher</span>
           </Link>
         </div>
