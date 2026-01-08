@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useProducts } from '@/lib/api-hooks';
 import { apiClient } from '@/lib/api-client';
 import { ProductCard } from '@/components/products/product-card';
@@ -12,21 +12,43 @@ import Link from 'next/link';
 import { Header } from '@/components/layout/header';
 import { ArrowDown, Sparkles, X, ChevronRight } from 'lucide-react';
 
+const SEARCH_STORAGE_KEY = 'cat-food-search-result';
+const SEARCH_QUERY_KEY = 'cat-food-search-query';
+
 export default function Home() {
   const { data: products, isLoading, error } = useProducts();
   const [filters, setFilters] = useState<ProductFilters>({});
   const [searchResult, setSearchResult] = useState<string | null>(null);
+  const [lastSearchQuery, setLastSearchQuery] = useState<string>('');
   const [isSearching, setIsSearching] = useState(false);
 
   const handleSearch = async (query: string) => {
     setIsSearching(true);
+    setLastSearchQuery(query);
     try {
       const result = await apiClient.search(query);
       setSearchResult(result.result);
+      
+      // Save to localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(SEARCH_STORAGE_KEY, result.result);
+        localStorage.setItem(SEARCH_QUERY_KEY, query);
+      }
     } catch (err) {
       setSearchResult('Error performing search');
     } finally {
       setIsSearching(false);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchResult(null);
+    setLastSearchQuery('');
+    
+    // Clear from localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(SEARCH_STORAGE_KEY);
+      localStorage.removeItem(SEARCH_QUERY_KEY);
     }
   };
 
@@ -95,7 +117,7 @@ export default function Home() {
             </div>
             
             <div className="max-w-2xl mx-auto pt-8 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
-               <SearchBar onSearch={handleSearch} isLoading={isSearching} />
+               <SearchBar onSearch={handleSearch} isLoading={isSearching} initialQuery={lastSearchQuery} />
             </div>
 
             {searchResult && (
@@ -110,16 +132,14 @@ export default function Home() {
                       <div>
                         <h3 className="font-semibold text-lg text-foreground">AI Search Results</h3>
                         <p className="text-xs text-muted-foreground font-medium">
-                          {matchedProducts.length > 0 
-                            ? `Found ${matchedProducts.length} product(s)`
-                            : 'Powered by intelligent analysis'}
+                          Powered by intelligent analysis
                         </p>
                       </div>
                     </div>
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => setSearchResult(null)}
+                      onClick={handleClearSearch}
                       className="h-9 w-9 rounded-lg hover:bg-background/80 transition-colors"
                     >
                       <X className="h-4 w-4" />
@@ -131,6 +151,9 @@ export default function Home() {
                     {/* Product List Section */}
                     {matchedProducts.length > 0 && (
                       <div className="space-y-3 mb-6">
+                        <p className="text-sm font-medium text-muted-foreground mb-4">
+                          Found {matchedProducts.length} product(s):
+                        </p>
                         {matchedProducts.map((product) => (
                           <Link
                             key={product.id}

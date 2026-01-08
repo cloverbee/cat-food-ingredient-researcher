@@ -19,6 +19,11 @@ const nextConfig: NextConfig = {
         hostname: "catfooddb.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "**.chewy.com",
+        pathname: "/**",
+      },
     ],
     // Higher quality for better image sharpness
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],

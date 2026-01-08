@@ -27,7 +27,7 @@ export function ProductCard({ product }: ProductCardProps) {
             className="object-contain transition-transform duration-300 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             quality={95}
-            unoptimized={product.image_url.includes('catfooddb.com') || product.image_url.includes('amazon.com')}
+            unoptimized={product.image_url.includes('catfooddb.com') || product.image_url.includes('amazon.com') || product.image_url.includes('chewy.com')}
             priority={false}
             onError={(e) => {
               // Fallback if image fails to load
