@@ -77,6 +77,14 @@ class Settings(BaseSettings):
     # NOTE: Optional for local/dev scripts; required only when AI features are used (and in production startup).
     GEMINI_API_KEY: Optional[str] = Field(default=None, description="Google Gemini API Key")
 
+    # Rate Limiting
+    RATE_LIMIT_ENABLED: bool = Field(default=True, description="Enable rate limiting")
+    RATE_LIMIT_PER_MINUTE: int = Field(default=10, description="Default requests per minute per IP")
+    RATE_LIMIT_SEARCH_PER_MINUTE: int = Field(
+        default=10, description="Search endpoint requests per minute per IP (stricter due to LLM costs)"
+    )
+    RATE_LIMIT_ADMIN_PER_MINUTE: int = Field(default=30, description="Admin endpoints requests per minute per IP")
+
     # Pydantic Settings Configuration
     model_config = SettingsConfigDict(
         env_file=".env",

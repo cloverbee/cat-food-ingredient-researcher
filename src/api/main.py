@@ -1,8 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 from src.api.controllers import ingestion_controller, ingredient_controller, product_controller, search_controller
 from src.core.config import settings
+from src.core.rate_limit import limiter
 from src.infrastructure.ai.llama_index_config import configure_llama_index
 
 # Conditional docs configuration - disable in production
@@ -13,6 +16,11 @@ else:
     docs_config = {"openapi_url": f"{settings.API_V1_STR}/openapi.json"}
 
 app = FastAPI(title=settings.PROJECT_NAME, **docs_config)
+
+# Initialize rate limiter
+if settings.RATE_LIMIT_ENABLED:
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Configure CORS
 # Get allowed origins from environment or use defaults
